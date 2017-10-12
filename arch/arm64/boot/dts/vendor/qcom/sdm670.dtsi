@@ -3084,7 +3084,7 @@
 #include "sdm670-thermal.dtsi"
 #include "sdm670-bus.dtsi"
 
-&pm660_div_clk {
+&pm660_clkdiv {
 	status = "ok";
 };
 

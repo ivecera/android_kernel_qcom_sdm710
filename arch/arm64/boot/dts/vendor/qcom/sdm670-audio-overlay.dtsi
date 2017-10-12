@@ -288,7 +288,7 @@
 		pinctrl-1 = <&tasha_mclk_default>;
 		qcom,audio-ref-clk-gpio = <&pm660_gpios 3 0>;
 		clock-names = "osr_clk";
-		clocks = <&pm660_div_clk>;
+		clocks = <&pm660_clkdiv>;
 		qcom,node_has_rpm_clock;
 		#clock-cells = <1>;
 	};
