@@ -1507,9 +1507,6 @@ static int msm_anlg_cdc_codec_enable_clock_block(
 					struct snd_soc_component *component,
 					int enable)
 {
-	struct msm_asoc_mach_data *pdata = NULL;
-
-	pdata = snd_soc_card_get_drvdata(component->card);
 	if (enable) {
 		snd_soc_component_update_bits(component,
 			MSM89XX_PMIC_ANALOG_MASTER_BIAS_CTL, 0x30, 0x30);
@@ -2421,9 +2418,6 @@ static int msm_anlg_cdc_codec_enable_dig_clk(struct snd_soc_dapm_widget *w,
 				snd_soc_dapm_to_component(w->dapm);
 	struct sdm660_cdc_priv *sdm660_cdc =
 				snd_soc_component_get_drvdata(component);
-	struct msm_asoc_mach_data *pdata = NULL;
-
-	pdata = snd_soc_card_get_drvdata(component->card);
 
 	dev_dbg(component->dev, "%s event %d w->name %s\n", __func__,
 			event, w->name);
@@ -3808,13 +3802,11 @@ static void msm_anlg_cdc_update_micbias_regulator(
 
 static int msm_anlg_cdc_device_down(struct snd_soc_component *component)
 {
-	struct msm_asoc_mach_data *pdata = NULL;
 	struct sdm660_cdc_priv *sdm660_cdc_priv =
 		snd_soc_component_get_drvdata(component);
 	unsigned int tx_1_en;
 	unsigned int tx_2_en;
 
-	pdata = snd_soc_card_get_drvdata(component->card);
 	dev_dbg(component->dev, "%s: device down!\n", __func__);
 
 	tx_1_en = snd_soc_component_read32(component,
@@ -3885,7 +3877,6 @@ static int msm_anlg_cdc_device_down(struct snd_soc_component *component)
 		MSM89XX_PMIC_ANALOG_SPKR_DAC_CTL, 0x93);
 
 	msm_anlg_cdc_dig_notifier_call(component, DIG_CDC_EVENT_SSR_DOWN);
-	atomic_set(&pdata->int_mclk0_enabled, false);
 	set_bit(BUS_DOWN, &sdm660_cdc_priv->status_mask);
 	snd_soc_card_change_online_state(component->card, 0);
 
@@ -4039,17 +4030,19 @@ static void msm_anlg_cdc_set_boost_v(struct snd_soc_component *component)
 static void msm_anlg_cdc_configure_cap(struct snd_soc_component *component,
 				       bool micbias1, bool micbias2)
 {
+	struct sdm660_cdc_priv *sdm660_cdc_priv =
+				snd_soc_component_get_drvdata(component);
+	struct msm_cap_mode *cap_mode = &sdm660_cdc_priv->cap_mode;
 
-	struct msm_asoc_mach_data *pdata = NULL;
-
-	pdata = snd_soc_card_get_drvdata(component->card);
+	blocking_notifier_call_chain(&sdm660_cdc_priv->notifier,
+		 DIG_CDC_EVENT_CAP_CONFIGURE, cap_mode);
 
 	pr_debug("\n %s: micbias1 %x micbias2 = %d\n", __func__, micbias1,
 			micbias2);
 	if (micbias1 && micbias2) {
-		if ((pdata->micbias1_cap_mode
+		if ((cap_mode->micbias1_cap_mode
 		     == MICBIAS_EXT_BYP_CAP) ||
-		    (pdata->micbias2_cap_mode
+		    (cap_mode->micbias2_cap_mode
 		     == MICBIAS_EXT_BYP_CAP))
 			snd_soc_component_update_bits(component,
 				MSM89XX_PMIC_ANALOG_MICB_1_EN,
@@ -4061,11 +4054,11 @@ static void msm_anlg_cdc_configure_cap(struct snd_soc_component *component,
 	} else if (micbias2) {
 		snd_soc_component_update_bits(component,
 				MSM89XX_PMIC_ANALOG_MICB_1_EN,
-				0x40, (pdata->micbias2_cap_mode << 6));
+				0x40, (cap_mode->micbias2_cap_mode << 6));
 	} else if (micbias1) {
 		snd_soc_component_update_bits(component,
 				MSM89XX_PMIC_ANALOG_MICB_1_EN, 0x40,
-				(pdata->micbias1_cap_mode << 6));
+				(cap_mode->micbias1_cap_mode << 6));
 	} else {
 		snd_soc_component_update_bits(component,
 				MSM89XX_PMIC_ANALOG_MICB_1_EN, 0x40, 0x00);
@@ -4389,13 +4382,11 @@ static int msm_anlg_cdc_suspend(struct snd_soc_component *component)
 
 static int msm_anlg_cdc_resume(struct snd_soc_component *component)
 {
-	struct msm_asoc_mach_data *pdata = NULL;
 	struct sdm660_cdc_priv *sdm660_cdc =
 				snd_soc_component_get_drvdata(component);
 	struct sdm660_cdc_pdata *sdm660_cdc_pdata =
 					sdm660_cdc->dev->platform_data;
 
-	pdata = snd_soc_card_get_drvdata(component->card);
 	msm_anlg_cdc_enable_static_supplies_to_optimum(sdm660_cdc,
 						       sdm660_cdc_pdata);
 	return 0;
