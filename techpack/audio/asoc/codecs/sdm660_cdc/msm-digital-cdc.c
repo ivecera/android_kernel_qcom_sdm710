@@ -1050,6 +1050,7 @@ static int msm_dig_cdc_event_notify(struct notifier_block *block,
 	struct msm_dig_priv *msm_dig_cdc =
 				snd_soc_component_get_drvdata(component);
 	struct msm_asoc_mach_data *pdata = NULL;
+	struct msm_cap_mode *capmode;
 	int ret = -EINVAL;
 
 	pdata = snd_soc_card_get_drvdata(component->card);
@@ -1138,6 +1139,9 @@ static int msm_dig_cdc_event_notify(struct notifier_block *block,
 		break;
 	case DIG_CDC_EVENT_SSR_DOWN:
 		regcache_cache_only(msm_dig_cdc->regmap, true);
+		mutex_lock(&pdata->cdc_int_mclk0_mutex);
+		atomic_set(&pdata->int_mclk0_enabled, false);
+		mutex_unlock(&pdata->cdc_int_mclk0_mutex);
 		break;
 	case DIG_CDC_EVENT_SSR_UP:
 		regcache_cache_only(msm_dig_cdc->regmap, false);
@@ -1164,6 +1168,11 @@ static int msm_dig_cdc_event_notify(struct notifier_block *block,
 				AFE_PORT_ID_INT0_MI2S_RX,
 				&pdata->digital_cdc_core_clk);
 		mutex_unlock(&pdata->cdc_int_mclk0_mutex);
+		break;
+	case DIG_CDC_EVENT_CAP_CONFIGURE:
+		capmode = (struct msm_cap_mode *)data;
+		capmode->micbias1_cap_mode = pdata->micbias1_cap_mode;
+		capmode->micbias2_cap_mode = pdata->micbias2_cap_mode;
 		break;
 	case DIG_CDC_EVENT_INVALID:
 	default:
