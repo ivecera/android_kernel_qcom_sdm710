@@ -149,5 +149,10 @@ static inline int msm_digcdc_mclk_enable(struct snd_soc_component *component,
 {
 	return 0;
 }
+static inline int msm_digcdc_mclk_enable(struct snd_soc_component *component,
+				int mclk_enable, bool dapm);
+{
+	return 0;
+}
 #endif /* CONFIG_SND_SOC_DIGITAL_CDC */
 #endif
