@@ -55,7 +55,7 @@
 			<0x509e000 0x1000>,
 			<0x780000 0x6300>;
 		reg-names =     "kgsl_3d0_reg_memory",
-				"kgsl_3d0_cx_dbgc_memory",
+				"cx_dbgc",
 				"cx_misc",
 				"qfprom_memory";
 		interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
