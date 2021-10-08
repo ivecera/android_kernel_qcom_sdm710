@@ -321,6 +321,10 @@
 
 	wdsp_glink: qcom,wcd-dsp-glink {
 		compatible = "qcom,wcd-dsp-glink";
+		qcom,wdsp-channels = "g_glink_ctrl",
+				     "g_glink_persistent_data_nild",
+				     "g_glink_persistent_data_ild",
+				     "g_glink_audio_data";
 	};
 
 	aqt_rst_gpio: aqt_cdc_pinctrl {
