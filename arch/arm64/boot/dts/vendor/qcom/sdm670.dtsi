@@ -775,9 +775,10 @@
 		ignored-save-restore-irqs = <38>;
 	};
 
-	pdc: interrupt-controller@b220000{
-		compatible = "qcom,pdc-sdm670";
+	pdc: interrupt-controller@b220000 {
+		compatible = "qcom,sdm670-pdc";
 		reg = <0xb220000 0x400>;
+		qcom,pdc-ranges = <0 480 94>, <94 609 15>, <115 630 7>;
 		#interrupt-cells = <3>;
 		interrupt-parent = <&intc>;
 		interrupt-controller;
