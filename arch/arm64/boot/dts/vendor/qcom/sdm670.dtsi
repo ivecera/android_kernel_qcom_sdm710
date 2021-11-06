@@ -1851,6 +1851,10 @@
 			compatible = "qcom,msm-bus-rsc";
 			qcom,msm-bus-id = <MSM_BUS_RSC_APPS>;
 		};
+
+		system_pm {
+			compatible = "qcom,system-pm";
+		};
 	};
 
 	disp_rsc: rsc@af20000 {
@@ -1870,11 +1874,6 @@
 			compatible = "qcom,msm-bus-rsc";
 			qcom,msm-bus-id = <MSM_BUS_RSC_DISP>;
 		};
-	};
-
-	system_pm {
-		compatible = "qcom,system-pm";
-		mboxes = <&apps_rsc 0>;
 	};
 
 	dcc: dcc_v2@10a2000 {
