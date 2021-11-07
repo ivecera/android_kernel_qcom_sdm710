@@ -1219,6 +1219,14 @@
 		clock-frequency = <32768>;
 	};
 
+	qcom,smp2p_sleepstate {
+		compatible = "qcom,smp2p-sleepstate";
+		qcom,smem-states = <&sleepstate_smp2p_out 0>;
+		interrupt-parent = <&sleepstate_smp2p_in>;
+		interrupts = <0 0>;
+		interrupt-names = "smp2p-sleepstate-in";
+	};
+
 	qcom,msm-imem@146bf000 {
 		compatible = "qcom,msm-imem";
 		reg = <0x146bf000 0x1000>;
@@ -1780,6 +1788,12 @@
 		reg = <0xc3f000c 0x8>;
 	};
 
+	apss_shared: mailbox@17990000 {
+		compatible = "qcom,sdm670-apss-shared";
+		reg = <0x17990000 0x1000>;
+		#mbox-cells = <1>;
+	};
+
 	apps_rsc: rsc@179c0000 {
 		compatible = "qcom,rpmh-rsc";
 		label = "apps_rsc";
@@ -1977,7 +1991,6 @@
 	qcom,lpass@62400000 {
 		compatible = "qcom,pil-tz-generic";
 		reg = <0x62400000 0x00100>;
-		interrupts = <0 162 1>;
 
 		vdd_cx-supply = <&pm660l_l9_level>;
 		qcom,proxy-reg-names = "vdd_cx";
@@ -1996,14 +2009,22 @@
 		qcom,signal-aop;
 		memory-region = <&pil_adsp_mem>;
 
-		/* GPIO inputs from lpass */
-		qcom,gpio-err-fatal = <&smp2pgpio_ssr_smp2p_2_in 0 0>;
-		qcom,gpio-proxy-unvote = <&smp2pgpio_ssr_smp2p_2_in 2 0>;
-		qcom,gpio-err-ready = <&smp2pgpio_ssr_smp2p_2_in 1 0>;
-		qcom,gpio-stop-ack = <&smp2pgpio_ssr_smp2p_2_in 3 0>;
+		/* Inputs from lpass */
+		interrupts-extended = <&intc GIC_SPI 162 1>,
+				<&adsp_smp2p_in 0 0>,
+				<&adsp_smp2p_in 2 0>,
+				<&adsp_smp2p_in 1 0>,
+				<&adsp_smp2p_in 3 0>;
 
-		/* GPIO output to lpass */
-		qcom,gpio-force-stop = <&smp2pgpio_ssr_smp2p_2_out 0 0>;
+		interrupt-names = "qcom,wdog",
+				"qcom,err-fatal",
+				"qcom,proxy-unvote",
+				"qcom,err-ready",
+				"qcom,stop-ack";
+
+		/* Outputs to lpass */
+		qcom,smem-states = <&adsp_smp2p_out 0>;
+		qcom,smem-state-names = "qcom,force-stop";
 
 		mboxes = <&qmp_aop 0>;
 		mbox-names = "adsp-pil";
@@ -2156,15 +2177,17 @@
 			0x400	/* uc_event_ring_size; */
 		>;
 
-		/* smp2p gpio information */
-		qcom,smp2pgpio_map_ipa_1_out {
-			compatible = "qcom,smp2pgpio-map-ipa-1-out";
-			gpios = <&smp2pgpio_ipa_1_out 0 0>;
+		/* smp2p information */
+		qcom,smp2p_map_ipa_1_out {
+			compatible = "qcom,smp2p-map-ipa-1-out";
+			qcom,smem-states = <&smp2p_ipa_1_out 0>;
+			qcom,smem-state-names = "ipa-smp2p-out";
 		};
 
-		qcom,smp2pgpio_map_ipa_1_in {
-			compatible = "qcom,smp2pgpio-map-ipa-1-in";
-			gpios = <&smp2pgpio_ipa_1_in 0 0>;
+		qcom,smp2p_map_ipa_1_in {
+			compatible = "qcom,smp2p-map-ipa-1-in";
+			interrupts-extended = <&smp2p_ipa_1_in 0 0>;
+			interrupt-names = "ipa-smp2p-in";
 		};
 
 		ipa_smmu_ap: ipa_smmu_ap {
@@ -2226,7 +2249,6 @@
 					  "gpll0_mss_clk", "snoc_axi_clk",
 					  "mnoc_axi_clk";
 
-		interrupts = <0 266 1>;
 		vdd_cx-supply = <&pm660l_s3_level>;
 		vdd_cx-voltage = <RPMH_REGULATOR_LEVEL_TURBO>;
 		vdd_mx-supply = <&pm660l_s1_level>;
@@ -2248,15 +2270,24 @@
 		qcom,mem-protect-id = <0xF>;
 		qcom,complete-ramdump;
 
-		/* GPIO inputs from mss */
-		qcom,gpio-err-fatal = <&smp2pgpio_ssr_smp2p_1_in 0 0>;
-		qcom,gpio-err-ready = <&smp2pgpio_ssr_smp2p_1_in 1 0>;
-		qcom,gpio-proxy-unvote = <&smp2pgpio_ssr_smp2p_1_in 2 0>;
-		qcom,gpio-stop-ack = <&smp2pgpio_ssr_smp2p_1_in 3 0>;
-		qcom,gpio-shutdown-ack = <&smp2pgpio_ssr_smp2p_1_in 7 0>;
+		/* Inputs from mss */
+		interrupts-extended = <&intc GIC_SPI 266 1>,
+				<&modem_smp2p_in 0 0>,
+				<&modem_smp2p_in 2 0>,
+				<&modem_smp2p_in 1 0>,
+				<&modem_smp2p_in 3 0>,
+				<&modem_smp2p_in 7 0>;
 
-		/* GPIO output to mss */
-		qcom,gpio-force-stop = <&smp2pgpio_ssr_smp2p_1_out 0 0>;
+		interrupt-names = "qcom,wdog",
+				"qcom,err-fatal",
+				"qcom,proxy-unvote",
+				"qcom,err-ready",
+				"qcom,stop-ack",
+				"qcom,shutdown-ack";
+
+		/* Outputs to mss */
+		qcom,smem-states = <&modem_smp2p_out 0>;
+		qcom,smem-state-names = "qcom,force-stop";
 
 		mboxes = <&qmp_aop 0>;
 		mbox-names = "mss-pil";
@@ -2295,7 +2326,6 @@
 	qcom,turing@8300000 {
 		compatible = "qcom,pil-tz-generic";
 		reg = <0x8300000 0x100000>;
-		interrupts = <0 578 1>;
 
 		vdd_cx-supply = <&pm660l_s3_level>;
 		qcom,proxy-reg-names = "vdd_cx";
@@ -2314,14 +2344,22 @@
 		qcom,signal-aop;
 		memory-region = <&pil_cdsp_mem>;
 
-		/* GPIO inputs from turing */
-		qcom,gpio-err-fatal = <&smp2pgpio_ssr_smp2p_5_in 0 0>;
-		qcom,gpio-proxy-unvote = <&smp2pgpio_ssr_smp2p_5_in 2 0>;
-		qcom,gpio-err-ready = <&smp2pgpio_ssr_smp2p_5_in 1 0>;
-		qcom,gpio-stop-ack = <&smp2pgpio_ssr_smp2p_5_in 3 0>;
+		/* Inputs from turing */
+		interrupts-extended = <&intc GIC_SPI 578 1>,
+				<&cdsp_smp2p_in 0 0>,
+				<&cdsp_smp2p_in 2 0>,
+				<&cdsp_smp2p_in 1 0>,
+				<&cdsp_smp2p_in 3 0>;
 
-		/* GPIO output to turing*/
-		qcom,gpio-force-stop = <&smp2pgpio_ssr_smp2p_5_out 0 0>;
+		interrupt-names = "qcom,wdog",
+				"qcom,err-fatal",
+				"qcom,proxy-unvote",
+				"qcom,err-ready",
+				"qcom,stop-ack";
+
+		/* Outputs to turing */
+		qcom,smem-states = <&cdsp_smp2p_out 0>;
+		qcom,smem-state-names = "qcom,force-stop";
 
 		mboxes = <&qmp_aop 0>;
 		mbox-names = "cdsp-pil";
@@ -2624,10 +2662,15 @@
 		qcom,vdd-3.3-ch0-config = <3000000 3312000>;
 		qcom,wlan-msa-memory = <0x100000>;
 		qcom,wlan-msa-fixed-region = <&wlan_msa_mem>;
-		qcom,gpio-force-fatal-error = <&smp2pgpio_wlan_1_in 0 0>;
-		qcom,gpio-early-crash-ind = <&smp2pgpio_wlan_1_in 1 0>;
 		qcom,smmu-s1-bypass;
 		#cooling-cells = <2>;
+
+		qcom,smp2p_map_wlan_1_in {
+			interrupts-extended = <&smp2p_wlan_1_in 0 0>,
+					<&smp2p_wlan_1_in 1 0>;
+			interrupt-names = "qcom,smp2p-force-fatal-error",
+					"qcom,smp2p-early-crash-ind";
+		};
 	};
 
 	cpubw: qcom,cpubw {
