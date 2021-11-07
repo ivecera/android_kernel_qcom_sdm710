@@ -122,7 +122,6 @@
 
 		/* GPU related llc slices */
 		cache-slice-names = "gpu", "gpuhtw";
-		cache-slices = <&llcc 12>, <&llcc 11>;
 
 		/* CPU latency parameter */
 		qcom,pm-qos-active-latency = <67>;
