@@ -538,7 +538,7 @@
 			reg = <0 0x93400000 0 0x800000>;
 		};
 
-		pil_mba_mem: pil_mba_region@0x93c00000 {
+		pil_mba_mem: pil_mba_region@93c00000 {
 			compatible = "removed-dma-pool";
 			no-map;
 			reg = <0 0x93c00000 0 0x200000>;
@@ -550,25 +550,25 @@
 			reg = <0 0x93e00000 0 0x1e00000>;
 		};
 
-		pil_ipa_fw_mem: ips_fw_region@0x95c00000 {
+		pil_ipa_fw_mem: ips_fw_region@95c00000 {
 			compatible = "removed-dma-pool";
 			no-map;
 			reg = <0 0x95c00000 0 0x10000>;
 		};
 
-		pil_ipa_gsi_mem: ipa_gsi_region@0x95c10000 {
+		pil_ipa_gsi_mem: ipa_gsi_region@95c10000 {
 			compatible = "removed-dma-pool";
 			no-map;
 			reg = <0 0x95c10000 0 0x5000>;
 		};
 
-		pil_gpu_mem: gpu_region@0x95c15000 {
+		pil_gpu_mem: gpu_region@95c15000 {
 			compatible = "removed-dma-pool";
 			no-map;
 			reg = <0 0x95c15000 0 0x2000>;
 		};
 
-		qseecom_mem: qseecom_region@0x9e400000 {
+		qseecom_mem: qseecom_region@9e400000 {
 			compatible = "shared-dma-pool";
 			no-map;
 			reg = <0 0x9e400000 0 0x1400000>;
@@ -991,7 +991,7 @@
 		#thermal-sensor-cells = <1>;
 	};
 
-	timer@0x17c90000{
+	timer@17c90000{
 		#address-cells = <1>;
 		#size-cells = <1>;
 		ranges;
@@ -999,7 +999,7 @@
 		reg = <0x17c90000 0x1000>;
 		clock-frequency = <19200000>;
 
-		frame@0x17ca0000 {
+		frame@17ca0000 {
 			frame-number = <0>;
 			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
 				     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
@@ -1155,7 +1155,7 @@
 		#clock-cells = <1>;
 	};
 
-	clock_cpucc: qcom,cpucc@0x17d41000 {
+	clock_cpucc: qcom,cpucc@17d41000 {
 		compatible = "qcom,clk-cpu-osm-sdm670";
 		reg = <0x17d41000 0x1400>,
 			<0x17d43000 0x1400>,
@@ -1298,7 +1298,7 @@
 		};
 	};
 
-	gpi_dma0: qcom,gpi-dma@0x800000 {
+	gpi_dma0: qcom,gpi-dma@800000 {
 		#dma-cells = <5>;
 		compatible = "qcom,gpi-dma";
 		reg = <0x800000 0x60000>;
@@ -1325,7 +1325,7 @@
 		status = "ok";
 	};
 
-	gpi_dma1: qcom,gpi-dma@0xa00000 {
+	gpi_dma1: qcom,gpi-dma@a00000 {
 		#dma-cells = <5>;
 		compatible = "qcom,gpi-dma";
 		reg = <0xa00000 0x60000>;
@@ -3050,24 +3050,24 @@
 		interrupts = <GIC_PPI 5 IRQ_TYPE_LEVEL_HIGH>;
 	};
 
-	gpu_gx_domain_addr: syscon@0x5091508 {
+	gpu_gx_domain_addr: syscon@5091508 {
 		compatible = "syscon";
 		reg = <0x5091508 0x4>;
 	};
 
-	gpu_gx_sw_reset: syscon@0x5091008 {
+	gpu_gx_sw_reset: syscon@5091008 {
 		compatible = "syscon";
 		reg = <0x5091008 0x4>;
 	};
 
-	qfprom: qfprom@0x780000 {
+	qfprom: qfprom@780000 {
 		compatible	= "qcom,qfprom";
 		reg		= <0x00784000 0x1000>;
 		#address-cells	= <1>;
 		#size-cells	= <1>;
 		ranges;
 
-		minor_rev: minor_rev@0x78414c {
+		minor_rev: minor_rev@78414c {
 			reg = <0x14c 0x4>;
 			bits = <0 30>; /* Access 30 bits from bit offset 0 */
 		};
