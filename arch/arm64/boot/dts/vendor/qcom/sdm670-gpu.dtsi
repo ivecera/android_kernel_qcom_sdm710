@@ -55,7 +55,7 @@
 				"kgsl_3d0_cx_dbgc_memory",
 				"cx_misc",
 				"qfprom_memory";
-		interrupts = <0 300 0>;
+		interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
 		interrupt-names = "kgsl_3d0_irq";
 		qcom,id = <0>;
 
@@ -707,7 +707,8 @@
 			"kgsl_gmu_reg",
 			"kgsl_gmu_pdc_reg";
 
-		interrupts = <0 304 0>, <0 305 0>;
+		interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
+			     <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
 		interrupt-names = "kgsl_hfi_irq", "kgsl_gmu_irq";
 
 		qcom,msm-bus,name = "cnoc";

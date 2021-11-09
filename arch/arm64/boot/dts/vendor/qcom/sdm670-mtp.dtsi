@@ -76,7 +76,7 @@
 		qcom,nq-esepwr = <&tlmm 116 0x00>;
 		interrupt-parent = <&tlmm>;
 		qcom,clk-src = "BBCLK3";
-		interrupts = <44 0>;
+		interrupts = <44 IRQ_TYPE_LEVEL_HIGH>;
 		interrupt-names = "nfc_irq";
 		pinctrl-names = "nfc_active", "nfc_suspend";
 		pinctrl-0 = <&nfc_int_active
