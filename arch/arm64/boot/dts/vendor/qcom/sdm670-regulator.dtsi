@@ -60,7 +60,7 @@
 		pm660_s5_level: regulator-pm660-s5 {
 			regulator-name = "pm660_s5_level";
 			qcom,set = <RPMH_REGULATOR_SET_ALL>;
-			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_OFF>;
+			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_RETENTION>;
 			regulator-max-microvolt = <RPMH_REGULATOR_LEVEL_MAX>;
 		};
 	};
@@ -86,14 +86,14 @@
 		pm660l_s1_level: regulator-pm660l-s1 {
 			regulator-name = "pm660l_s1_level";
 			qcom,set = <RPMH_REGULATOR_SET_ALL>;
-			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_OFF>;
+			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_RETENTION>;
 			regulator-max-microvolt = <RPMH_REGULATOR_LEVEL_MAX>;
 		};
 
 		pm660l_s1_level_ao: regulator-pm660l-s1-level-ao {
 			regulator-name = "pm660l_s1_level_ao";
 			qcom,set = <RPMH_REGULATOR_SET_ACTIVE>;
-			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_OFF>;
+			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_RETENTION>;
 			regulator-max-microvolt = <RPMH_REGULATOR_LEVEL_MAX>;
 		};
 
@@ -101,7 +101,7 @@
 			compatible = "qcom,regulator-cooling-device";
 			regulator-cdev-supply = <&pm660l_s1_level>;
 			regulator-levels = <RPMH_REGULATOR_LEVEL_NOM
-					RPMH_REGULATOR_LEVEL_OFF>;
+					RPMH_REGULATOR_LEVEL_RETENTION>;
 			#cooling-cells = <2>;
 		};
 	};
@@ -648,7 +648,7 @@
 		pm660l_l9_level: regulator-pm660l-l9-level {
 			regulator-name = "pm660l_l9_level";
 			qcom,set = <RPMH_REGULATOR_SET_ALL>;
-			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_OFF>;
+			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_RETENTION>;
 			regulator-max-microvolt = <RPMH_REGULATOR_LEVEL_MAX>;
 		};
 	};
@@ -661,7 +661,7 @@
 		pm660l_l10_level: regulator-pm660l-l10-level {
 			regulator-name = "pm660l_l10_level";
 			qcom,set = <RPMH_REGULATOR_SET_ALL>;
-			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_OFF>;
+			regulator-min-microvolt = <RPMH_REGULATOR_LEVEL_RETENTION>;
 			regulator-max-microvolt = <RPMH_REGULATOR_LEVEL_MAX>;
 		};
 	};
