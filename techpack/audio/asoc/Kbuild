@@ -76,6 +76,10 @@ ifeq ($(KERNEL_BUILD), 0)
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/gvmautoconf.h
 	endif
+	ifeq ($(CONFIG_ARCH_SDM670), y)
+		include $(AUDIO_ROOT)/config/sdm670auto.conf
+		INCS    +=  -include $(AUDIO_ROOT)/config/sdm670autoconf.h
+	endif
 	ifeq ($(CONFIG_ARCH_SDM660), y)
 		include $(AUDIO_ROOT)/config/sdm660auto.conf
 		export
@@ -163,6 +167,11 @@ endif
 # for sa8155 sound card driver
 ifdef CONFIG_SND_SOC_SA8155
 	MACHINE_OBJS += sa8155.o
+endif
+
+# for SDM6xx sound card driver
+ifdef CONFIG_SND_SOC_SDM670
+        MACHINE_OBJS += sdm660-common.o
 endif
 
 # for SDM6xx sound card driver
@@ -285,6 +294,9 @@ machine_dlkm-y := $(MACHINE_OBJS)
 
 obj-$(CONFIG_SND_SOC_EXT_CODEC_SDM450) += machine_ext_dlkm.o
 machine_ext_dlkm-y := $(MACHINE_EXT_OBJS)
+
+obj-$(CONFIG_SND_SOC_SDM670) += machine_dlkm.o
+machine_dlkm-y := $(MACHINE_OBJS)
 
 obj-$(CONFIG_SND_SOC_SM8150) += machine_dlkm.o
 machine_dlkm-y := $(MACHINE_OBJS)
