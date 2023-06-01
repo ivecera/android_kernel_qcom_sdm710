@@ -35,6 +35,7 @@
 	vdd-supply = <&pm660l_l1>;
 	vdda18-supply = <&pm660_l10>;
 	vdda33-supply = <&pm660l_l7>;
+	refgen-supply = <&pm660_l1>;
 	qcom,host-chirp-erratum;
 	qcom,qusb-phy-host-init-seq =
 			/* <value reg_offset> */
