@@ -540,7 +540,7 @@
 };
 
 &thermal_zones {
-	pm660_temp_alarm: pm660-tz {
+	pm660_temp_alarm: pm660_tz {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-governor = "step_wise";
