@@ -179,13 +179,13 @@
 	};
 };
 
-&smb1355_1 {
+&smb1355 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&smb_int_default
 			&smb_shutdown_default>;
 	interrupt-parent = <&tlmm>;
 	interrupts = <54 IRQ_TYPE_LEVEL_LOW>;
-	smb1355_charger_1: qcom,smb1355-charger@1000 {
+	smb1355_charger: qcom,smb1355-charger@1000 {
 		io-channels = <&pm660_rradc 2>,
 				<&pm660_rradc 12>;
 		io-channel-names = "charger_temp",
