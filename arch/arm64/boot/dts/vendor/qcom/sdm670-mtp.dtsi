@@ -370,10 +370,6 @@
 	qcom,mdss-dsi-mode-sel-gpio-state = "single_port";
 };
 
-&dsi_dual_nt35597_truly_video_display {
-	qcom,dsi-display-active;
-};
-
 &pm660l_wled {
 	status = "okay";
 	qcom,led-strings-list = [01 02];
