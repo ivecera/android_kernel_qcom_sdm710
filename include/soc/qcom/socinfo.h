@@ -151,6 +151,12 @@ enum socinfo_parttype {
 	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,sdmmagpie")
 #define early_machine_is_sdm660()	\
 	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,sdm660")
+#define early_machine_is_sdm670()       \
+	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,sdm670")
+#define early_machine_is_sdm710()       \
+	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,sdm670")
+#define early_machine_is_sdm712()       \
+	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,sdm670")
 #define early_machine_is_bengal_iot()	\
 	of_flat_dt_is_compatible(of_get_flat_dt_root(), "qcom,bengal-iot")
 #define early_machine_is_bengalp_iot()	\
@@ -208,6 +214,9 @@ enum socinfo_parttype {
 #define early_machine_is_sdxprairie()	0
 #define early_machine_is_sdmmagpie()	0
 #define early_machine_is_sdm660()	0
+#define early_machine_is_sdm670()	0
+#define early_machine_is_sdm710()	0
+#define early_machine_is_sdm712()	0
 #define early_machine_is_bengal_iot()	0
 #define early_machine_is_bengalp_iot()	0
 #define early_machine_is_msm8937()	0
@@ -238,6 +247,9 @@ enum msm_cpu {
 	MSM_CPU_8084,
 	MSM_CPU_8996,
 	MSM_CPU_SDM660,
+	MSM_CPU_SDM670,
+	MSM_CPU_SDM710,
+	MSM_CPU_SDM712,
 	MSM_CPU_SM8150,
 	MSM_CPU_SA8150,
 	MSM_CPU_KONA,
