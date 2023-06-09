@@ -24,6 +24,10 @@
 		msm_audio_apr_dummy {
 			compatible = "qcom,msm-audio-apr-dummy";
 		};
+
+		q6core: qcom,q6core-audio {
+			compatible = "qcom,q6core-audio";
+		};
 	};
 
 	qcom,avtimer@62cf700c {
@@ -34,7 +38,9 @@
 		qcom,clk-div = <192>;
 		qcom,clk-mult = <10>;
 	};
+};
 
+&q6core {
 	tavil_snd: sound-tavil {
 		status = "disabled";
 		compatible = "qcom,sdm670-asoc-snd-tavil";
