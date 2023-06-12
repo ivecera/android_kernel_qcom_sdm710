@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-only
 
-ccflags-y := -I$(srctree)/drivers/clk/qcom/
+ccflags-y += -I$(src) -I$(srctree)/drivers/clk/qcom/
 
 obj-$(CONFIG_QCOM_MDSS_PLL) += pll_util.o
 obj-$(CONFIG_QCOM_MDSS_PLL) += pll_drv.o
