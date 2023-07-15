@@ -82,6 +82,11 @@ ifeq ($(KERNEL_BUILD), 0)
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/sdm660autoconf.h
 	endif
+	ifeq ($(CONFIG_ARCH_SDM670), y)
+		include $(AUDIO_ROOT)/config/sdm710auto.conf
+		export
+		INCS    +=  -include $(AUDIO_ROOT)/config/sdm710autoconf.h
+	endif
 	ifeq ($(CONFIG_ARCH_SDM450), y)
 		include $(AUDIO_ROOT)/config/sdm450auto.conf
 		export
@@ -161,7 +166,6 @@ CDEFINES +=	-DANI_LITTLE_BYTE_ENDIAN \
 		-DANI_OS_TYPE_ANDROID=6 \
 		-DPTT_SOCK_SVC_ENABLE \
 		-Wall\
-		-Werror\
 		-D__linux__
 
 KBUILD_CPPFLAGS += $(CDEFINES)
