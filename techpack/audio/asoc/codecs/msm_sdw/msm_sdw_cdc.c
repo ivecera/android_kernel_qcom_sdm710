@@ -1815,6 +1815,8 @@ static int msm_sdw_notifier_service_cb(struct notifier_block *nb,
 		msm_sdw->int_mclk1_enabled = false;
 		mutex_unlock(&msm_sdw->cdc_int_mclk1_mutex);
 		msm_sdw->dev_up = false;
+		snd_soc_card_change_online_state(
+			msm_sdw->component->card, 0);
 		for (i = 0; i < msm_sdw->nr; i++)
 			swrm_wcd_notify(msm_sdw->sdw_ctrl_data[i].sdw_pdev,
 					SWR_DEVICE_DOWN, NULL);
@@ -1849,6 +1851,8 @@ powerup:
 			regcache_sync(msm_sdw->regmap);
 			msm_sdw_set_spkr_mode(msm_sdw->component,
 					      msm_sdw->spkr_mode);
+			snd_soc_card_change_online_state(
+				msm_sdw->component->card, 1);
 		}
 		break;
 	default:

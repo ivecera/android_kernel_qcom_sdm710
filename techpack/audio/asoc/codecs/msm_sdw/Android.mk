@@ -9,7 +9,11 @@ ifeq ($(call is-board-platform,sdm660),true)
 AUDIO_SELECT  := CONFIG_SND_SOC_SDM660=m
 endif
 
-ifeq ($(call is-board-platform-in-list, sdm660),true)
+ifeq ($(call is-board-platform,sdm710),true)
+AUDIO_SELECT  := CONFIG_SND_SOC_SDM670=m
+endif
+
+ifeq ($(call is-board-platform-in-list, sdm660 sdm710),true)
 
 LOCAL_PATH := $(call my-dir)
 

@@ -3542,7 +3542,12 @@ static int _sde_kms_hw_init_ioremap(struct sde_kms *sde_kms,
 							"sid_phys");
 	if (IS_ERR(sde_kms->sid)) {
 		rc = PTR_ERR(sde_kms->sid);
-		SDE_ERROR("sid register memory map failed: %d\n", rc);
+		if (rc == -EINVAL) {
+			SDE_DEBUG("SID_PHYS is not defined\n");
+			rc = 0;
+		} else {
+			SDE_ERROR("sid register memory map failed: %d\n", rc);
+		}
 		sde_kms->sid = NULL;
 		goto error;
 	}
