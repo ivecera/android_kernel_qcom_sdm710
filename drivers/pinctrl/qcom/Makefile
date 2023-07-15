@@ -28,4 +28,5 @@ obj-$(CONFIG_PINCTRL_BENGAL) += pinctrl-bengal.o
 obj-$(CONFIG_PINCTRL_KHAJE) += pinctrl-khaje.o
 obj-$(CONFIG_PINCTRL_LAGOON) += pinctrl-lagoon.o
 obj-$(CONFIG_PINCTRL_SCUBA) += pinctrl-scuba.o
-obj-$(CONFIG_PINCTRL_SDM660)   += pinctrl-sdm660.o
+obj-$(CONFIG_PINCTRL_SDM660) += pinctrl-sdm660.o
+obj-$(CONFIG_PINCTRL_SDM670) += pinctrl-sdm670.o
