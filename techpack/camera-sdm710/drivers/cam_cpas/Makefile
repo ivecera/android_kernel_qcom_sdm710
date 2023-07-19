@@ -1,3 +1,4 @@
+ccflags-y += -I$(srctree)/techpack/camera-sdm710/include/uapi
 ccflags-y += -I$(srctree)/techpack/camera-sdm710/drivers/cam_utils
 ccflags-y += -I$(srctree)/techpack/camera-sdm710/drivers/cam_req_mgr
 ccflags-y += -I$(srctree)/techpack/camera-sdm710/drivers/cam_core
