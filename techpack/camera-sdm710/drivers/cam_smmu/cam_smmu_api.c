@@ -1789,11 +1789,10 @@ err_alloc:
 			*paddr_ptr,
 			*len_ptr);
 	} else if (region_id == CAM_SMMU_REGION_IO) {
-		msm_dma_unmap_sg(iommu_cb_set.cb_info[idx].dev,
+		dma_unmap_sg(iommu_cb_set.cb_info[idx].dev,
 			table->sgl,
 			table->nents,
-			dma_dir,
-			buf);
+			dma_dir);
 	}
 err_unmap_sg:
 	dma_buf_unmap_attachment(attach, table, dma_dir);
@@ -1905,9 +1904,9 @@ static int cam_smmu_unmap_buf_and_remove_from_list(
 			CAM_ERR(CAM_SMMU, "IOVA free failed");
 
 	} else if (mapping_info->region_id == CAM_SMMU_REGION_IO) {
-		msm_dma_unmap_sg(iommu_cb_set.cb_info[idx].dev,
+		dma_unmap_sg(iommu_cb_set.cb_info[idx].dev,
 			mapping_info->table->sgl, mapping_info->table->nents,
-			mapping_info->dir, mapping_info->buf);
+			mapping_info->dir);
 	}
 
 	dma_buf_unmap_attachment(mapping_info->attach,
