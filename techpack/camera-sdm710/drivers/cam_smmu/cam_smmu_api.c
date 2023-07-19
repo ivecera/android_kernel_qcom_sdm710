@@ -173,8 +173,7 @@ struct cam_dma_buff_info {
 };
 
 struct cam_sec_buff_info {
-	struct ion_handle *i_hdl;
-	struct ion_client *i_client;
+	struct dma_buf *buf;
 	enum dma_data_direction dir;
 	int ref_count;
 	dma_addr_t paddr;
@@ -2360,44 +2359,64 @@ handle_err:
 }
 
 static int cam_smmu_map_stage2_buffer_and_add_to_list(int idx, int ion_fd,
-		 enum dma_data_direction dma_dir, struct ion_client *client,
-		 dma_addr_t *paddr_ptr,
+		 enum dma_data_direction dma_dir, dma_addr_t *paddr_ptr,
 		 size_t *len_ptr)
 {
 	int rc = 0;
-	struct ion_handle *i_handle = NULL;
+	struct dma_buf *dmabuf = NULL;
+	struct dma_buf_attachment *attach = NULL;
+	struct sg_table *table = NULL;
 	struct cam_sec_buff_info *mapping_info;
 
 	/* clean the content from clients */
 	*paddr_ptr = (dma_addr_t)NULL;
 	*len_ptr = (size_t)0;
 
-	i_handle = ion_import_dma_buf_fd(client, ion_fd);
-	if (IS_ERR_OR_NULL((void *)(i_handle))) {
-		CAM_ERR(CAM_SMMU, "ion import dma buffer failed");
-		return -EINVAL;
+	dmabuf = dma_buf_get(ion_fd);
+	if (IS_ERR_OR_NULL((void *)(dmabuf))) {
+		CAM_ERR(CAM_SMMU, "Error: dma buf get failed");
+		rc = PTR_ERR(dmabuf);
+		goto err_out;
+	}
+
+	/*
+	 * ion_phys() is deprecated. call dma_buf_attach() and
+	 * dma_buf_map_attachment() to get the buffer's physical
+	 * address.
+	 */
+	attach = dma_buf_attach(dmabuf, iommu_cb_set.cb_info[idx].dev);
+	if (IS_ERR_OR_NULL(attach)) {
+		CAM_ERR(CAM_SMMU, "Error: dma buf attach failed");
+		rc = PTR_ERR(attach);
+		goto err_put;
+	}
+
+	attach->dma_map_attrs |= DMA_ATTR_SKIP_CPU_SYNC;
+
+	table = dma_buf_map_attachment(attach, dma_dir);
+	if (IS_ERR_OR_NULL(table)) {
+		CAM_ERR(CAM_SMMU, "Error: dma buf map attachment failed");
+		rc = PTR_ERR(table);
+		goto err_detach;
 	}
 
 	/* return addr and len to client */
-	rc = ion_phys(client, i_handle, paddr_ptr, len_ptr);
-	if (rc) {
-		CAM_ERR(CAM_SMMU, "ION Get Physical failed, rc: %d",
-			rc);
-		return rc;
-	}
+	*paddr_ptr = sg_phys(table->sgl);
+	*len_ptr = (size_t)sg_dma_len(table->sgl);
 
 	/* fill up mapping_info */
 	mapping_info = kzalloc(sizeof(struct cam_sec_buff_info), GFP_KERNEL);
-	if (!mapping_info)
-		return -ENOMEM;
+	if (!mapping_info) {
+		rc = -ENOMEM;
+		goto err_unmap_sg;
+	}
 
 	mapping_info->ion_fd = ion_fd;
 	mapping_info->paddr = *paddr_ptr;
 	mapping_info->len = *len_ptr;
 	mapping_info->dir = dma_dir;
 	mapping_info->ref_count = 1;
-	mapping_info->i_hdl = i_handle;
-	mapping_info->i_client = client;
+	mapping_info->buf = dmabuf;
 
 	CAM_DBG(CAM_SMMU, "ion_fd = %d, dev = %pK, paddr= %pK, len = %u",
 			ion_fd,
@@ -2407,13 +2426,21 @@ static int cam_smmu_map_stage2_buffer_and_add_to_list(int idx, int ion_fd,
 	/* add to the list */
 	list_add(&mapping_info->list, &iommu_cb_set.cb_info[idx].smmu_buf_list);
 
+	return 0;
+
+err_unmap_sg:
+	dma_buf_unmap_attachment(attach, table, dma_dir);
+err_detach:
+	dma_buf_detach(dmabuf, attach);
+err_put:
+	dma_buf_put(dmabuf);
+err_out:
 	return rc;
 }
 
 int cam_smmu_map_stage2_iova(int handle,
 		int ion_fd, enum cam_smmu_map_dir dir,
-		struct ion_client *client, ion_phys_addr_t *paddr_ptr,
-		size_t *len_ptr)
+		dma_addr_t *paddr_ptr, size_t *len_ptr)
 {
 	int idx, rc;
 	enum dma_data_direction dma_dir;
@@ -2470,7 +2497,7 @@ int cam_smmu_map_stage2_iova(int handle,
 		goto get_addr_end;
 	}
 	rc = cam_smmu_map_stage2_buffer_and_add_to_list(idx, ion_fd, dma_dir,
-			client, paddr_ptr, len_ptr);
+			paddr_ptr, len_ptr);
 	if (rc < 0) {
 		CAM_ERR(CAM_SMMU, "Error: mapping or add list fail");
 		goto get_addr_end;
@@ -2490,7 +2517,7 @@ static int cam_smmu_secure_unmap_buf_and_remove_from_list(
 		CAM_ERR(CAM_SMMU, "Error: List doesn't exist");
 		return -EINVAL;
 	}
-	ion_free(mapping_info->i_client, mapping_info->i_hdl);
+	dma_buf_put(mapping_info->buf);
 	list_del_init(&mapping_info->list);
 
 	CAM_DBG(CAM_SMMU, "unmap fd: %d, idx : %d", mapping_info->ion_fd, idx);
